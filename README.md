@@ -1,8 +1,7 @@
 # CareBridge 🩺
 ## Preview
 
-![CareBridge screenshot](./https://github.com/DhanRock/CareBridge/blob/main/CareBridge/Screenshot%202026-10-17%20151826.png)
-
+![CareBridge screenshot](./CareBridge%20Thumbnail.jpg)
 **Making healthcare information easier to understand through AI and accessible design.**
 
 ## About
