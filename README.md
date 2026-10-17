@@ -1,8 +1,7 @@
 # CareBridge 🩺
 ## Preview
 
-![CareBridge application screenshot](<img width="707" height="1068" alt="Screenshot 2026-10-17 151826 png" src="https://github.com/user-attachments/assets/ad776456-9ce7-4cc6-bbd7-46a5ebf8052a" />
-)
+![CareBridge screenshot](./https://github.com/DhanRock/CareBridge/blob/main/CareBridge/Screenshot%202026-10-17%20151826.png)
 
 **Making healthcare information easier to understand through AI and accessible design.**
 
