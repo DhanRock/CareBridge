@@ -62,6 +62,7 @@ function formatSections(answer: string) {
 function App() {
   const [text, setText] = useState("");
   const [mode, setMode] = useState("simplify");
+  const [explanationStyle, setExplanationStyle] = useState("simple");
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -160,7 +161,11 @@ function App() {
       const response = await fetch("http://127.0.0.1:8000/simplify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, mode }),
+        body: JSON.stringify({
+          text,
+          mode,
+          style: explanationStyle,
+        }),
       });
 
       const data = await response.json();
@@ -199,9 +204,9 @@ function App() {
 
   return (
     <div
-  className={`app ${highContrast ? "high-contrast" : ""}`}
-  style={{ "--reading-size": `${textSize}px` } as React.CSSProperties}
->
+      className={`app ${highContrast ? "high-contrast" : ""}`}
+      style={{ "--reading-size": `${textSize}px` } as React.CSSProperties}
+    >
       <header className="hero">
         <div className="logo">CB</div>
         <p className="eyebrow">HEALTHCARE, MADE CLEARER</p>
@@ -213,57 +218,71 @@ function App() {
       </header>
 
       <main>
-        <section className="accessibility-toolbar" aria-label="Accessibility settings">
-  <strong>Reading settings</strong>
+        <section
+          className="accessibility-toolbar"
+          aria-label="Accessibility settings"
+        >
+          <strong>Reading settings</strong>
 
-  <div className="accessibility-controls">
-    <button
-      type="button"
-      className="accessibility-button"
-      onClick={() => setTextSize((size) => Math.max(14, size - 2))}
-      disabled={textSize <= 14}
-      aria-label="Decrease reading text size"
-    >
-      A−
-    </button>
+          <div className="accessibility-controls">
+            <button
+              type="button"
+              className="accessibility-button"
+              onClick={() =>
+                setTextSize((size) => Math.max(14, size - 2))
+              }
+              disabled={textSize <= 14}
+              aria-label="Decrease reading text size"
+            >
+              A−
+            </button>
 
-    <span className="text-size-label">{textSize}px</span>
+            <span className="text-size-label">{textSize}px</span>
 
-    <button
-      type="button"
-      className="accessibility-button"
-      onClick={() => setTextSize((size) => Math.min(24, size + 2))}
-      disabled={textSize >= 24}
-      aria-label="Increase reading text size"
-    >
-      A+
-    </button>
+            <button
+              type="button"
+              className="accessibility-button"
+              onClick={() =>
+                setTextSize((size) => Math.min(24, size + 2))
+              }
+              disabled={textSize >= 24}
+              aria-label="Increase reading text size"
+            >
+              A+
+            </button>
 
-    <button
-      type="button"
-      className={`accessibility-button ${highContrast ? "selected" : ""}`}
-      aria-pressed={highContrast}
-      onClick={() => setHighContrast((enabled) => !enabled)}
-    >
-      {highContrast ? "High Contrast On" : "High Contrast"}
-    </button>
+            <button
+              type="button"
+              className={`accessibility-button ${
+                highContrast ? "selected" : ""
+              }`}
+              aria-pressed={highContrast}
+              onClick={() => setHighContrast((enabled) => !enabled)}
+            >
+              {highContrast ? "High Contrast On" : "High Contrast"}
+            </button>
 
-    <button
-      type="button"
-      className="accessibility-button"
-      onClick={() => {
-        setTextSize(16);
-        setHighContrast(false);
-      }}
-    >
-      Reset
-    </button>
-  </div>
-</section>
+            <button
+              type="button"
+              className="accessibility-button"
+              onClick={() => {
+                setTextSize(16);
+                setHighContrast(false);
+              }}
+            >
+              Reset
+            </button>
+          </div>
+        </section>
+
         <section className="card">
           <div className="mode-selector">
             <button
-              className={mode === "simplify" ? "mode-button active" : "mode-button"}
+              className={
+                mode === "simplify"
+                  ? "mode-button active"
+                  : "mode-button"
+              }
               onClick={() => changeMode("simplify")}
               type="button"
             >
@@ -271,13 +290,48 @@ function App() {
             </button>
 
             <button
-              className={mode === "question" ? "mode-button active" : "mode-button"}
+              className={
+                mode === "question"
+                  ? "mode-button active"
+                  : "mode-button"
+              }
               onClick={() => changeMode("question")}
               type="button"
             >
               Ask a Question
             </button>
           </div>
+
+          {mode === "simplify" && (
+            <div className="explanation-style">
+              <label htmlFor="explanation-style">
+                Choose your explanation style
+              </label>
+
+              <p className="hint">
+                Pick how you want CareBridge to explain the information.
+              </p>
+
+              <select
+                id="explanation-style"
+                value={explanationStyle}
+                onChange={(event) => {
+                  setExplanationStyle(event.target.value);
+                  setResult("");
+                  setError("");
+                  setCopied(false);
+                  stopSpeech();
+                }}
+              >
+                <option value="simple">Simple language</option>
+                <option value="bullets">Bullet-point summary</option>
+                <option value="terms">Explain medical terms</option>
+                <option value="beginner">
+                  Beginner-friendly explanation
+                </option>
+              </select>
+            </div>
+          )}
 
           <label htmlFor="health-text">
             {mode === "simplify"
@@ -327,7 +381,9 @@ function App() {
           </div>
 
           {loading && (
-            <p className="hint">Preparing your explanation. This may take a little while...</p>
+            <p className="hint">
+              Preparing your explanation. This may take a little while...
+            </p>
           )}
 
           {error && <p className="error">{error}</p>}
@@ -360,7 +416,9 @@ function App() {
                 disabled={isSpeaking && !isPaused}
               >
                 <span aria-hidden="true">🔊</span>{" "}
-                {isSpeaking && !isPaused ? "Reading aloud..." : "Read Aloud"}
+                {isSpeaking && !isPaused
+                  ? "Reading aloud..."
+                  : "Read Aloud"}
               </button>
 
               <button

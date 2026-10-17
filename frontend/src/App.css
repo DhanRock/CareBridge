@@ -562,3 +562,39 @@ footer p {
     width: 100%;
   }
 }
+
+/* Explanation style selector */
+.style-selector {
+  margin: 20px 0;
+}
+
+.style-selector label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.style-selector select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1e293b;
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.style-selector select:focus-visible {
+  outline: none;
+  border-color: #3984d6;
+  box-shadow: 0 0 0 3px rgba(57, 132, 214, 0.18);
+}
+
+.style-description {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
